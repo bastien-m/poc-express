@@ -1,0 +1,28 @@
+extends ../index
+
+block content
+    .row
+        a(class='waves-effect waves-light btn', href='version/creer') 
+            i(class='material-icons left') add
+            | Créer une livraison
+    .row
+        table
+            thead
+                tr
+                    th version
+                    th createur
+                    th date déploiement
+                    th 
+            tbody
+                each livraison in livraisons
+                    tr
+                        td= livraison.tag
+                        td= livraison.createur
+                        td= moment(livraison.date_deploiement)
+                        td
+                            a(class='waves-effect waves-light btn', href=`/version/${livraison.id}/afficher`)
+                                i(class='material-icons left') keyboard_arrow_right
+                                | Afficher
+                            a(class='waves-effect waves-light btn', href=`/version/${livraison.id}/editer`)
+                                i(class='material-icons left') edit
+                                | Editer
