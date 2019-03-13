@@ -1,10 +1,15 @@
 const ApplicationErreur = require('../models/application.error');
+const moment = require('moment');
 
 module.exports = (app) => {
+
     const get = (req, res) => {
         const { id, action } = req.params;
         app.services.version.get(id)
             .then(version =>  res.render('version/creer', {
+                actionUrl: `/version/${id}`,
+                verb: 'post',
+                csrfToken: req.csrfToken(),
                 title: `Livraison ${version.tag}`,
                 livraison: version,
                 lectureSeule: action === 'afficher' ? true : false
@@ -13,11 +18,20 @@ module.exports = (app) => {
         
     };
 
-    const createForm = (req, res) => { res.render('version/creer', {
-        title: 'Créer une nouvelle livraison',
-        livraison: null,
-        lectureSeule: false
-    })}
+    const createForm = (req, res) => { 
+        res.render('version/creer', {
+            actionUrl: '/version',
+            verb: 'post',
+            csrfToken: req.csrfToken(),
+            title: 'Créer une nouvelle livraison',
+            livraison: {
+                tag: '',
+                createur: '',
+                date_deploiement: moment().format('YYYY-MM-DD')
+            },
+            lectureSeule: false
+        }
+    )}
 
     const modify = (req, res) => {
         const id = req.params.id;
@@ -27,12 +41,13 @@ module.exports = (app) => {
                 erreur: new ApplicationErreur(400, `Tentative de modification d'un élément non autorisé`)
             });
         } else {
-            app.service.version.modify(req.body)
-                .then(livraison => res.render(`version/creer/${livraison.id}`))
-                .catch(erreur => res.render('erreur', {
-                    title: 'Erreur - modification',
-                    erreur
-                }))
+            app.services.version.update(req.body)
+                .then(livraison => res.redirect(`/version`))
+                .catch(erreur =>  res.render('erreur', {
+                        title: 'Erreur - modification',
+                        erreur
+                    })
+                )
         }  
     }
 
@@ -46,7 +61,7 @@ module.exports = (app) => {
 
     const create = (req, res) => {
         app.services.version.create(req.body)
-            .then(livraison => res.render(`version/creer/${livraison.tag}`))
+            .then(livraison => res.redirect(`/version`))
             .catch(erreur => res.render('erreur', {
                 title: 'Erreur - création',
                 erreur

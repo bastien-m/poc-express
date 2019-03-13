@@ -1,17 +1,18 @@
 const ApplicationError = require('../models/application.error');
+const moment = require('moment');
 
 const livraisons = [
     {
         id: 0,
         tag: 'v0',
         createur: 'bastien',
-        date_deploiement: '01/01/2019'
+        date_deploiement: moment('2019-01-01', 'yyyy-MM-dd').format('YYYY-MM-DD')
     },
     {
         id: 1,
         tag: 'v1',
         createur: 'sylvain',
-        date_deploiement: '01/03/2019'
+        date_deploiement: moment('2019-01-01', 'yyyy-MM-dd').format('YYYY-MM-DD')
     }
 ];
 
@@ -35,11 +36,14 @@ module.exports = (app) => {
 
     const update = (livraison) => {
         return new Promise((resolve, reject) => {
-            const index = livraisons.findIndex(l => l.id === livraison.id);
+            const index = livraisons.findIndex(l => l.id === +livraison.id);
             if (index === -1) {
                 return reject(new ApplicationError(400, 'Livraison introuvable'))
             } else {
-                livraisons[index] = livraison;
+                const livraisonAModifier = livraisons[index];
+                livraisonAModifier.createur = livraison.createur;
+                livraisonAModifier.date_deploiement = livraison.date_deploiement;
+                livraisonAModifier.tag = livraison.tag;
                 return resolve(livraison);
             }
         })
@@ -50,7 +54,7 @@ module.exports = (app) => {
             if (livraisons.find(l => livraison.tag === l.tag)) {
                 return reject(new ApplicationError(503, 'Tag existant'));
             }
-            livraison.id = +livraisons.reduce((previous, current) => current.id > previous ? current : previous , 0) + 1;
+            livraison.id = +livraisons.reduce((previous, current) => current.id > previous ? current.id : previous , 0) + 1;
             livraisons.push(livraison);
             return resolve(livraison);
         })

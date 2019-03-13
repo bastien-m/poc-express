@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server",
+    "start-as-prod": "NODE_ENV=production node server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "bastien.mercier@capgemini.com",

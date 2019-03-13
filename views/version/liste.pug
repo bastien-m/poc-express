@@ -18,7 +18,7 @@ block content
                     tr
                         td= livraison.tag
                         td= livraison.createur
-                        td= moment(livraison.date_deploiement)
+                        td= livraison.date_deploiement
                         td
                             a(class='waves-effect waves-light btn', href=`/version/${livraison.id}/afficher`)
                                 i(class='material-icons left') keyboard_arrow_right

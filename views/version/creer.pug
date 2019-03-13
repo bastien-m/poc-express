@@ -1,16 +1,18 @@
 extends ../index
 block content
-    form(action="/version/creer", method="post")
-    .row
-        .col.s12
-            .row
-                div(class='input-field col s6')
-                    input(placeholder='tag', id='tag', class='validate', value=livraison.tag, disabled=lectureSeule ? true : false, required)
-                div(class='input-field col s6')
-                    input(placeholder='createur', id='createur', class='validate', value=livraison.createur, disabled=lectureSeule ? true : false, required)
-            .row
-                div(class='input-field col s6')
-                    input(placeholder='Date déploiement', id='date_deploiement',value=livraison.date_deploiement, class='datepicker validate', disabled=lectureSeule ? true : false, required, type='date')
-            unless lectureSeule
+    form(action=actionUrl, method=verb)
+        .row
+            .col.s12
                 .row
-                    button(class='waves-effect waves-light btn', type='submit') Valider 
+                    div(class='input-field col s6')
+                        input(placeholder='tag', name='tag', class='validate', value=livraison.tag, disabled=lectureSeule ? true : false, required)
+                    div(class='input-field col s6')
+                        input(placeholder='createur', name='createur', class='validate', value=livraison.createur, disabled=lectureSeule ? true : false, required)
+                .row
+                    div(class='input-field col s6')
+                        input(placeholder='Date déploiement', name='date_deploiement',value=livraison.date_deploiement, class='datepicker validate', disabled=lectureSeule ? true : false, required, type='date')
+                unless lectureSeule
+                    .row
+                        button(class='waves-effect waves-light btn', type='submit') Valider 
+                input(type='hidden', name='_csrf', value=csrfToken)
+                input(type='hidden', name="id", value=livraison.id)
